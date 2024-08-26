@@ -1,7 +1,7 @@
 name: pipeline-deploy-s3
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
