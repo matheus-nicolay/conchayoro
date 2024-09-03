@@ -1,0 +1,43 @@
+name: integracao-ecr-eb
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+  MODULE_NAME: ${{ vars.MODULE_NAME }}
+  TAG: ${{ vars.TAG }}
+  STACK_NAME: ${{ vars.STACK_NAME }}
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MODULE_FULLNAME: ${{ vars.PROJECT_NAME }}/${{ vars.MODULE_NAME }}
+      REGISTRY_URL: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    - run: docker build -t $MODULE_FULLNAME $MODULE_NAME
+    - run: |
+        docker tag $MODULE_FULLNAME:$TAG \
+        $REGISTRY_URL/$MODULE_FULLNAME:$TAG
+    - run: | 
+        aws ecr get-login-password --region $AWS_REGION | \
+        docker login --username AWS --password-stdin $REGISTRY_URL
+    - run: docker push $REGISTRY_URL/$MODULE_FULLNAME:$TAG
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ebconfig
+        path: |
+           frontend/.elasticbeanstalk/config.yml
+           frontend/Dockerrun.aws.json
