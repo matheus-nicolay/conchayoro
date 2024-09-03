@@ -41,12 +41,6 @@ jobs:
         path: |
            frontend/.elasticbeanstalk/config.yml
            frontend/Dockerrun.aws.json
-    - uses: actions/upload-artifact@v4
-      with:
-        name: ebconfig
-        path: |
-          frontend/.elasticbeanstalk/config.yml
-          frontend/Dockerrun.aws.json
 
   deploy:
     runs-on: ubuntu-latest
