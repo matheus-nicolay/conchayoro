@@ -7,11 +7,11 @@ environment-defaults:
     repository: null
 global:
   application_name: conchayoro
-  default_ec2_keyname: vockey
+  #default_ec2_keyname: vockey
   default_platform: Docker
   default_region: us-west-2
   include_git_submodules: true
-  instance_profile: LabInstanceProfile
+  #instance_profile: LabInstanceProfile
   platform_name: null
   platform_version: null
   profile: null
