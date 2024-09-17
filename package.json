@@ -10,6 +10,7 @@
   "description": "",
   "dependencies": {
     "@nestjs/sequelize": "^10.0.1",
+    "@vercel/flags": "^2.6.0",
     "sequelize": "^6.37.3",
     "sequelize-typescript": "^2.1.6",
     "sqlite3": "^5.1.7"
